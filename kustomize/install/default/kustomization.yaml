@@ -11,10 +11,10 @@ bases:
 
 images:
 - name: postgres-operator
-  newName: registry.developers.crunchydata.com/crunchydata/postgres-operator
+  newName: captain.escs.udel.edu:5000/postgres-operator
   newTag: ubi8-5.1.0-0
 - name: postgres-operator-upgrade
-  newName: registry.developers.crunchydata.com/crunchydata/postgres-operator-upgrade
+  newName: captain.escs.udel.edu:5000/postgres-operator-upgrade
   newTag: ubi8-5.1.0-0
 
 patchesJson6902:

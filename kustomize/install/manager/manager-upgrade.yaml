@@ -32,4 +32,6 @@ spec:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+      imagePullSecrets:
+        - name: captain-regcreds
       serviceAccountName: postgres-operator-upgrade
