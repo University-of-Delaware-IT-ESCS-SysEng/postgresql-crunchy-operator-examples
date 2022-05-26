@@ -27,6 +27,7 @@ cat dump-2022-05-25T02-30-03-0400.sql | kubectl exec -i grouper-prod-instance1-b
 ### What You might not want to see:
 
 kubectl get statefulsets -n postgres-operator
+
 kubectl get statefulsets grouper-prod-instance1-b297 -n postgres-operator -o yaml
 
 ## Pull Images.
