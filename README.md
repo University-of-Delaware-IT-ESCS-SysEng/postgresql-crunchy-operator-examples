@@ -18,6 +18,12 @@ You can find out more information about [PGO](https://github.com/CrunchyData/pos
 
 # UofD Notes
 
+## Useful commands:
+
+kubectl -n postgres-operator get svc --selector=postgres-operator.crunchydata.com/cluster=grouper-prod
+
+cat dump-2022-05-25T02-30-03-0400.sql | kubectl exec -i grouper-prod-instance1-b297-0 -n postgres-operator -- psql -U postgres
+
 ## Pull Images.
 
 See the script 'b'.  Edit the files listed and obtain the image
