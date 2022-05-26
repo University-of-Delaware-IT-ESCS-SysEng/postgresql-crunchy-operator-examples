@@ -24,6 +24,11 @@ kubectl -n postgres-operator get svc --selector=postgres-operator.crunchydata.co
 
 cat dump-2022-05-25T02-30-03-0400.sql | kubectl exec -i grouper-prod-instance1-b297-0 -n postgres-operator -- psql -U postgres
 
+### What You might not want to see:
+
+kubectl get statefulsets -n postgres-operator
+kubectl get statefulsets grouper-prod-instance1-b297 -n postgres-operator -o yaml
+
 ## Pull Images.
 
 See the script 'b'.  Edit the files listed and obtain the image
