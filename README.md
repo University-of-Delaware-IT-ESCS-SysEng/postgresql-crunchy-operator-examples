@@ -35,6 +35,16 @@ If needed, find captain-regcreds-secrets.yaml and apply it to the
 postgres-operator namespace.  If you do not do this, the operator
 will not be able to pull its images.
 
+## PVs
+
+The persistent volume resources are defined in the pvs/ directory.
+
+## Databases
+
+To create, for instance, grouper-prod:
+
+kubectl apply -k grouper-prod
+
 ## Notes
 
 If this project ever really gets a Dockerfile, then we will have to

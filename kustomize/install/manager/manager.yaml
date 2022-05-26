@@ -47,5 +47,5 @@ spec:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
       imagePullSecrets:
-        - name: captain-regcreds
+      - name: captain-regcreds
       serviceAccountName: pgo
