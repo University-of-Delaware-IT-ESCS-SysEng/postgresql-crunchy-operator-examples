@@ -2,12 +2,10 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
     labels:
-        app: grouper-prod-repo-pgo
+        app: grouper-prod-repo-pgo-pv
     name: grouper-prod-repo-pgo
     annotations:
         pv.beta.kubernetes.io/gid: "26"
-
-# Make directory uid:gid writable with 26:26.
 
 spec:
     storageClassName: "grouper-prod-repo-pgo"
@@ -15,15 +13,10 @@ spec:
         - ReadWriteOnce
     capacity:
         storage: 40G
-    persistentVolumeReclaimPolicy: Retain
-    hostPath:
-        path: "/k8s_data/grouper-pgo/prod/grouper-0"
 
-    nodeAffinity:
-        required:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - gainful-wh01.escs.udel.edu
+    nfs:
+        path: "/kube-pv/grouper-prod-pgo/"
+        server: "gainful-pv01.escs.udel.edu"
+
+    persistentVolumeReclaimPolicy: Retain
+

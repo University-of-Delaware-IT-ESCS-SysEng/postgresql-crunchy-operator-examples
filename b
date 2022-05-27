@@ -28,7 +28,8 @@ for o in  "registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi
           "registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-0" \
           "registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.16-2" \
           "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-exporter:ubi8-5.1.0-0" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-upgrade:ubi8-5.1.0-0"; do
+          "registry.developers.crunchydata.com/crunchydata/crunchy-upgrade:ubi8-5.1.0-0" \
+                        ; do \
     OURIMAGE=`basename $o`
     echo "FROM ${o}" > Dockerfile
     docker build -f Dockerfile -t  $OURIMAGE .

@@ -20,15 +20,39 @@ You can find out more information about [PGO](https://github.com/CrunchyData/pos
 
 ## Useful commands:
 
-kubectl -n postgres-operator get svc --selector=postgres-operator.crunchydata.com/cluster=grouper-prod
+### Login to the database grouper-prod
 
+```
+kubectl exec -it -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster=grouper-prod,postgres-operator.crunchydata.com/role=master' -o name) -- psql
+```
+
+```
+kubectl -n postgres-operator get svc --selector=postgres-operator.crunchydata.com/cluster=grouper-prod
+```
+
+### Restore a dump
+
+```
 cat dump-2022-05-25T02-30-03-0400.sql | kubectl exec -i grouper-prod-instance1-b297-0 -n postgres-operator -- psql -U postgres
+```
+
 
 ### What You might not want to see:
 
+```
 kubectl get statefulsets -n postgres-operator
 
 kubectl get statefulsets grouper-prod-instance1-b297 -n postgres-operator -o yaml
+```
+
+### Viewing a Database State
+
+This is for database grouper_prod
+
+```
+kubectl -n postgres-operator get pods \
+  --selector=postgres-operator.crunchydata.com/cluster=grouper-prod,postgres-operator.crunchydata.com/instance
+```
 
 ## Pull Images.
 
@@ -55,7 +79,9 @@ The persistent volume resources are defined in the pvs/ directory.
 
 To create, for instance, grouper-prod:
 
+```
 kubectl apply -k grouper-prod
+```
 
 ## Notes
 
