@@ -1,0 +1,102 @@
+ LDAP Provider policy for Grouper access
+
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: ldap-provider-grouper-np
+  namespace: ldap-dev
+spec:
+  selector: app == 'udel-openldap-provider'
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+      namespaceSelector: udel.edu/calicopolicy == 'grouper-dev'
+    destination:
+      ports:
+      - 389
+      - 636
+---
+
+# LDAP Consumer policy for Grouper access
+
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: ldap-consumer-grouper-np
+  namespace: ldap-dev
+spec:
+  selector: app == 'udel-openldap-consumer'
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+      namespaceSelector: udel.edu/calicopolicy == 'grouper-dev'
+    destination:
+      ports:
+      - 389
+      - 636
+
+---
+
+# LDAP policy for syncrepl
+
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: ldap-syncrepl-np
+  namespace: ldap-dev
+spec:
+  selector: app == 'udel-openldap-provider'
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+     selector: app == 'udel-openldap-consumer'
+    destination:
+      ports:
+      - 389
+      - 636
+
+---
+
+# External LDAP policy for provider.
+
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: ldap-external-provider-np
+  namespace: ldap-dev
+spec:
+  selector: app == 'udel-openldap-provider'
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+      nets:
+      - 128.175.13.49/32
+    destination:
+      ports:
+      - 389
+      - 636
+
+---
+
+# External LDAP policy for consumers.
+
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: ldap-external-consumer-np
+  namespace: ldap-dev
+spec:
+  selector: app == 'udel-openldap-consumer'
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+      nets:
+      - 128.175.13.49/32
+    destination:
+      ports:
+      - 389
