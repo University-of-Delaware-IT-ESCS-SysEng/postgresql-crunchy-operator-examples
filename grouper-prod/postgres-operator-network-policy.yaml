@@ -1,0 +1,17 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+    name: postgres-operator-np
+    namespace: postgres-operator
+    annotations:
+        from: Anywhere in the namespace
+        to: Anywhere in the namespace
+spec:
+    types:
+    - Ingress
+    - Egress
+    ingress:
+    - action: Allow
+    egress:
+    - action: Allow
+
