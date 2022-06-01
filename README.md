@@ -36,6 +36,8 @@ kubectl -n postgres-operator get svc --selector=postgres-operator.crunchydata.co
 cat dump-2022-05-25T02-30-03-0400.sql | kubectl exec -i grouper-prod-instance1-b297-0 -n postgres-operator -- psql -U postgres
 ```
 
+NOTE: if you have running pods, you can get the logs of any one of them and they will tell you process leader.  There are other ways to get it, too.
+Make sure you are careful and not running replicas and WAL archiving when doing this.  It is possible to generate enough IO to kill a NetApp.
 
 ### What You might not want to see:
 
