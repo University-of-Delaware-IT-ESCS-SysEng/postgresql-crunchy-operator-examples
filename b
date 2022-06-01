@@ -6,7 +6,7 @@ if [ `git status --porcelain | wc -l` -gt 0 ]; then
     echo require checkins.
     echo
     git status
-#    exit 1
+    exit 1
 fi
 
 #
@@ -24,6 +24,7 @@ for o in  "registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi
           "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis:ubi8-13.6-3.1-1" \
           "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.2-1" \
           "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis:ubi8-14.2-3.1-1" \
+          "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.3-0" \
           "registry.developers.crunchydata.com/crunchydata/crunchy-pgadmin4:ubi8-4.30-0" \
           "registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-0" \
           "registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.16-2" \
