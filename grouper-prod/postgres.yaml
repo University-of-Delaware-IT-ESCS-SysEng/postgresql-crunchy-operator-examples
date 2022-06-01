@@ -1,32 +1,47 @@
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
-  name: grouper-prod
+    name: grouper-prod
 spec:
-  imagePullSecrets:
-    - name: captain-regcreds
-  image: captain.escs.udel.edu:5000/crunchy-postgres:ubi8-14.2-1
-  postgresVersion: 14
-  instances:
-    - name: instance1
-      replicas: 3
-      dataVolumeClaimSpec:
-        storageClassName: "grouper-prod-pgo"
-        accessModes:
-        - "ReadWriteOnce"
-        resources:
-          requests:
-            storage: 40G
-  backups:
-    pgbackrest:
-      image: captain.escs.udel.edu:5000/crunchy-pgbackrest:ubi8-2.38-0
-      repos:
-      - name: repo1
-        volume:
-          volumeClaimSpec:
-            storageClassName: "grouper-prod-repo-pgo"
-            accessModes:
+    imagePullSecrets:
+        - name: captain-regcreds
+    image: captain.escs.udel.edu:5000/crunchy-postgres:ubi8-14.2-1
+    postgresVersion: 14
+    instances:
+      - name: instance1
+        replicas: 3
+        dataVolumeClaimSpec:
+          storageClassName: "grouper-prod-pgo"
+          accessModes:
             - "ReadWriteOnce"
-            resources:
+          resources:
               requests:
-                storage: 40G
+                  storage: 40G
+    backups:
+       pgbackrest:
+            image: captain.escs.udel.edu:5000/crunchy-pgbackrest:ubi8-2.38-0
+            global:
+                repo1-retention-full-type: time
+                repo1-retention-full: "21"
+# kubectl annotate -n postgres-operator postgrescluster <db-name> \
+#  postgres-operator.crunchydata.com/pgbackrest-backup="$(date)"
+# Add --overwrite when doing another manual dump.
+            manual:
+                repoName: repo1
+                options:
+                  - --type=full
+            repos:
+              - name: repo1
+                schedules:
+# 1am Sunday: full, differentials other days, and incr every 3 hours
+                    full: "0 1 * * 0"
+                    differential: "0 1 * * 1-6"
+                    incremental: "0 4,7,10,13,16,19,22 * * *"
+                volume:
+                   volumeClaimSpec:
+                       storageClassName: "grouper-prod-repo-pgo"
+                       accessModes:
+                         - "ReadWriteOnce"
+                       resources:
+                           requests:
+                               storage: 40G
