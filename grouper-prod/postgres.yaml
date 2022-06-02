@@ -5,7 +5,7 @@ metadata:
 spec:
     imagePullSecrets:
         - name: captain-regcreds
-    image: captain.escs.udel.edu:5000/crunchy-postgres:ubi8-14.2-1
+    image: captain.escs.udel.edu:5000/crunchy-postgres:ubi8-14.3-0
     postgresVersion: 14
     instances:
       - name: instance1
@@ -69,5 +69,22 @@ spec:
                        resources:
                            requests:
                                storage: 40G
+#
+# This should cause a secret to be generate which we can easily
+# access (with appropriate credentials, of course).
+# I had to add the database field in order to get the secret
+# create after the DB node existed.
+# Also, once you add a 'users' section, you need to list the
+# node user here as well.
+#
+
+    users:
+      - name: postgres
+        databases:
+          - postgres
+      - name: grouper-prod
+        databases:
+          - grouper-prod
+        options: 'CREATEROLE LOGIN'
 
 # End.
