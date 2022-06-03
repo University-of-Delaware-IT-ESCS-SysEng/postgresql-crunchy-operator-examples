@@ -9,7 +9,7 @@ spec:
     postgresVersion: 14
     instances:
       - name: instance1
-        replicas: 3
+        replicas: 1
         dataVolumeClaimSpec:
             storageClassName: "grouper-prod-pgo"
             accessModes:

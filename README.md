@@ -60,7 +60,7 @@ Save in a notes file the archive_command and then set it to nothing.
 
 ```
 DB=grouper-prod
-zcat the-dump-file.gz | kubectl exec -i -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql | gzip > ${DB}-dump-`date +'%Y-%m-%dT%H:%M:%S'`.gz
+zcat the-dump-file.gz | kubectl exec -i -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql
 ```
 
 NOTE: if you have running pods, you can get the logs of any one of them and they will tell you process leader.  There are other ways to get it, too.
@@ -79,8 +79,9 @@ kubectl get statefulsets grouper-prod-instance1-b297 -n postgres-operator -o yam
 This is for database grouper_prod
 
 ```
+DB="grouper-prod"
 kubectl -n postgres-operator get pods \
-  --selector=postgres-operator.crunchydata.com/cluster=grouper-prod,postgres-operator.crunchydata.com/instance
+  --selector=postgres-operator.crunchydata.com/cluster=${DB},postgres-operator.crunchydata.com/instance
 ```
 
 ## Pull Images.

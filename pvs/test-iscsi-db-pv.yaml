@@ -7,29 +7,27 @@
 # Persistent volume config for the gainful-pv02.escs test iSCSI.             #
 ##############################################################################
 #
-# Notes: this LUN was used for the pgrestore POD for the database.  It
-# successfully received the WAL for a Grouper database restore.
-# It will also receive the pg_basebackups and associated files for the
-# database.
+# Similar to other PV, but sized for a database.  We will be installing
+# a full, running copy of the grouper database on this LUN.
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: udpsqlnetdb-pv-iscsi-2
+  name: udpsqlnetdb-pv-iscsi-3
   labels:
     type: iscsi
     app: udpsqlnetdb-pv-iscsi
 spec:
-  storageClassName: "grouper-prod-repo-iscsi-pgo"
+  storageClassName: "grouper-prod-iscsi-pgo"
   capacity:
-    storage: 20Gi
+    storage: 60Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   iscsi:
     targetPortal: 10.2.249.100
     iqn: iqn.2003-01.org.linux-iscsi.gainful-pv02.x8664:sn.ae312c14575a
-    lun: 0
+    lun: 1
     fsType: xfs
     readOnly: false
     chapAuthDiscovery: true
