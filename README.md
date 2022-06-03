@@ -20,20 +20,47 @@ You can find out more information about [PGO](https://github.com/CrunchyData/pos
 
 ## Useful commands:
 
-### Login to the database grouper-prod
+### Login to the database grouper-prod.
 
 ```
-kubectl exec -it -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster=grouper-prod,postgres-operator.crunchydata.com/role=master' -o name) -- psql
+DB=grouper-prod
+kubectl exec -it -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql
 ```
 
 ```
 kubectl -n postgres-operator get svc --selector=postgres-operator.crunchydata.com/cluster=grouper-prod
 ```
 
-### Restore a dump
+### Take a pg_dumpall Dump
+
+This type of dump will generate SQL output that can be fed back into psql.
 
 ```
-cat dump-2022-05-25T02-30-03-0400.sql | kubectl exec -i grouper-prod-instance1-b297-0 -n postgres-operator -- psql -U postgres
+DB=grouper-prod
+kubectl exec -i -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- pg_dumpall | gzip > ${DB}-dump-`date +'%Y-%m-%dT%H:%M:%S'`.gz
+```
+
+### Restore a dump
+
+This will restore a logical dump.  You probably want to set replicas on the cluster to one, first.  There is not much point in generating and saving all that
+WAL data.
+
+Consider the following:
+
+```
+postgres=# show archive_command ;
+             archive_command
+------------------------------------------
+ pgbackrest --stanza=db archive-push "%p"
+```
+
+Save in a notes file the archive_command and then set it to nothing.
+
+
+
+```
+DB=grouper-prod
+zcat the-dump-file.gz | kubectl exec -i -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql | gzip > ${DB}-dump-`date +'%Y-%m-%dT%H:%M:%S'`.gz
 ```
 
 NOTE: if you have running pods, you can get the logs of any one of them and they will tell you process leader.  There are other ways to get it, too.

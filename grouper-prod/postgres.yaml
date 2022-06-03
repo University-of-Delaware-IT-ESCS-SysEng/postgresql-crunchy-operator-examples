@@ -55,7 +55,8 @@ spec:
                 options:
                   - --type=full
             repos:
-              - name: repo1
+#              - name: repo1
+              - name: repo2
                 schedules:
 # 1am Sunday: full, differentials other days, and incr every 3 hours
                     full: "0 1 * * 0"
@@ -63,12 +64,13 @@ spec:
                     incremental: "0 4,7,10,13,16,19,22 * * *"
                 volume:
                    volumeClaimSpec:
-                       storageClassName: "grouper-prod-repo-pgo"
+#                       storageClassName: "grouper-prod-repo-pgo"
+                       storageClassName: "grouper-prod-repo-iscsi-pgo"
                        accessModes:
                          - "ReadWriteOnce"
                        resources:
                            requests:
-                               storage: 40G
+                               storage: 17G
 #
 # This should cause a secret to be generate which we can easily
 # access (with appropriate credentials, of course).

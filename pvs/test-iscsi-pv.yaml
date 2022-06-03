@@ -1,0 +1,35 @@
+##############################################################################
+# test-pv-iscsi.yml                                                          #
+#                                                                            #
+# Fraser Gutteridge, blue@udel.edu    2022-05-04                             #
+# University of Delaware IT-ESCS Unix Systems Engineering                    #
+#                                                                            #
+# Persistent volume config for the gainful-pv02.escs test iSCSI.             #
+##############################################################################
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: udpsqlnetdb-pv-iscsi-2
+  labels:
+    type: iscsi
+    app: udpsqlnetdb-pv-iscsi
+spec:
+  storageClassName: "grouper-prod-repo-iscsi-pgo"
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  iscsi:
+    targetPortal: 10.2.249.100
+    iqn: iqn.2003-01.org.linux-iscsi.gainful-pv02.x8664:sn.ae312c14575a
+    lun: 0
+    fsType: xfs
+    readOnly: false
+    chapAuthDiscovery: true
+    chapAuthSession: true
+    secretRef:
+      name: kube-pv-iscsi-secret
+
+# End.
