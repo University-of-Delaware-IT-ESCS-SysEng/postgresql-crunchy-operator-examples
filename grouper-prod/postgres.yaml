@@ -21,6 +21,57 @@ spec:
                     cpu: 4.0
                     memory: 32Gi
 
+      - name: instance2
+        replicas: 1
+        dataVolumeClaimSpec:
+            storageClassName: "grouper-prod-iscsi-pgo"
+            accessModes:
+              - "ReadWriteOnce"
+            resources:
+                requests:
+                    storage: 40G
+                limits:
+                    cpu: 4.0
+                    memory: 32Gi
+        affinity:
+
+# Force to hardware backed nodes as vs. VMs
+
+            nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution: {
+                    nodeSelectorTerms: [
+                        matchExpressions: [
+                            {
+                                key: udel.edu/hardware-worker,
+                                operator: In,
+                                values: [ worker ]
+                            }
+                        ]
+                    ]
+                }
+
+# Try and avoid scheduling to a worker already running a replica of this
+# database.
+
+            podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution: [
+                    {
+                        weight: 1,
+                        podAffinityTerm: {
+                            topologyKey: "kubernetes.io/hostname",
+                            labelSelector: {
+                                matchExpressions: [
+                                    {
+                                        key: postgres-operator.crunchydata.com/cluster,
+                                        operator: In,
+                                        values: [ grouper-prod ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+
     patroni:
         dynamicConfiguration:
             synchronous_mode: true
