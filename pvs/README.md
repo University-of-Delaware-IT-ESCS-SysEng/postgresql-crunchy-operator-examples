@@ -4,6 +4,10 @@ This directory contains the PVs we use.  At this time,
 our PVs are tied to a specific machine since we do not
 have NAS and NFS died using Postgresql.
 
+## iSCSI
+
+We are testing the use of iSCSI volumes.
+
 ## Reusing the PV
 
 I haven't tested this yet, but:
@@ -15,6 +19,14 @@ for use with a new database defintion resource:
 
 In a released state, edit the PV and remove spec.claimRef block
 
+```
 kubectl edit pv <pv name>
+```
 
 This is supposed to make the PV available.
+
+A faster way:
+
+```
+kubectl patch pv grouper-prod-3-pgo -p '{"spec":{"claimRef": null}}'
+```

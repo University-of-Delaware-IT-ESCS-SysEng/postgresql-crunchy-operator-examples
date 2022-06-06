@@ -2,6 +2,7 @@ apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
     name: grouper-prod
+    namespace: grouper-prod-ns
 spec:
     imagePullSecrets:
         - name: captain-regcreds
@@ -120,6 +121,7 @@ spec:
                        resources:
                            requests:
                                storage: 300G
+
 #
 # This should cause a secret to be generate which we can easily
 # access (with appropriate credentials, of course).

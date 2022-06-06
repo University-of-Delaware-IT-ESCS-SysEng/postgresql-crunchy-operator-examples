@@ -18,17 +18,27 @@ You can find out more information about [PGO](https://github.com/CrunchyData/pos
 
 # UofD Notes
 
+## Installation
+
+The installation was done in a cluster-wide mode which should enable the operator to manage databases in any namespace.  Specifically, I did:
+
+```
+kubectl apply --server-side -k kustomize/install/default
+
+```
+
 ## Useful commands:
 
 ### Login to the database grouper-prod.
 
 ```
 DB=grouper-prod
-kubectl exec -it -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql
+NS=${DB}
+kubectl exec -it -n ${NS} -c database   $(kubectl get pods -n ${NS} --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql
 ```
 
 ```
-kubectl -n postgres-operator get svc --selector=postgres-operator.crunchydata.com/cluster=grouper-prod
+kubectl -n ${NS} get svc --selector=postgres-operator.crunchydata.com/cluster=${DB}
 ```
 
 ### Take a pg_dumpall Dump
@@ -37,7 +47,8 @@ This type of dump will generate SQL output that can be fed back into psql.
 
 ```
 DB=grouper-prod
-kubectl exec -i -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- pg_dumpall | gzip > ${DB}-dump-`date +'%Y-%m-%dT%H:%M:%S'`.gz
+NS=${DB}
+kubectl exec -i -n ${NS} -c database   $(kubectl get pods -n ${NS} --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- pg_dumpall | gzip > ${DB}-dump-`date +'%Y-%m-%dT%H:%M:%S'`.gz
 ```
 
 ### Restore a dump
@@ -60,7 +71,8 @@ Save in a notes file the archive_command and then set it to nothing.
 
 ```
 DB=grouper-prod
-zcat the-dump-file.gz | kubectl exec -i -n postgres-operator -c database   $(kubectl get pods -n postgres-operator --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql
+NS=${DB}
+zcat the-dump-file.gz | kubectl exec -i -n ${NS} -c database   $(kubectl get pods -n ${NS} --selector='postgres-operator.crunchydata.com/cluster='${DB}',postgres-operator.crunchydata.com/role=master' -o name) -- psql
 ```
 
 NOTE: if you have running pods, you can get the logs of any one of them and they will tell you process leader.  There are other ways to get it, too.
@@ -69,9 +81,9 @@ Make sure you are careful and not running replicas and WAL archiving when doing 
 ### What You might not want to see:
 
 ```
-kubectl get statefulsets -n postgres-operator
-
-kubectl get statefulsets grouper-prod-instance1-b297 -n postgres-operator -o yaml
+DB=grouper-prod
+NS=${DB}
+kubectl get statefulsets -n ${NS}
 ```
 
 ### Viewing a Database State
@@ -80,7 +92,8 @@ This is for database grouper_prod
 
 ```
 DB="grouper-prod"
-kubectl -n postgres-operator get pods \
+NS=${DB}
+kubectl -n ${NS} get pods \
   --selector=postgres-operator.crunchydata.com/cluster=${DB},postgres-operator.crunchydata.com/instance
 ```
 
@@ -112,6 +125,9 @@ To create, for instance, grouper-prod:
 ```
 kubectl apply -k grouper-prod
 ```
+
+To specify the namespace, edit kustomization.yaml and set
+the namespace: value.
 
 ## Notes
 
