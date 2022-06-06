@@ -1,22 +1,43 @@
+##############################################################################
+# test-pv-iscsi.yml                                                          #
+#                                                                            #
+# Fraser Gutteridge, blue@udel.edu    2022-05-04                             #
+# University of Delaware IT-ESCS Unix Systems Engineering                    #
+#                                                                            #
+# Persistent volume config for the gainful-pv02.escs test iSCSI.             #
+##############################################################################
+#
+# Notes: this LUN was used for the pgrestore POD for the database.  It
+# successfully received the WAL for a Grouper database restore.
+# It will also receive the pg_basebackups and associated files for the
+# database.
+#
+# It also an appropriate location to place logical dumps made by
+# pg_dumpall.
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-    labels:
-        app: grouper-prod-repo-pgo-pv
-    name: grouper-prod-repo-pgo
-    annotations:
-        pv.beta.kubernetes.io/gid: "26"
-
+  name: grouper-prod-repo-iscsi-pgo
+  labels:
+    type: iscsi
+    app: grouper-prod-repo-iscsi-pgo
 spec:
-    storageClassName: "grouper-prod-repo-pgo"
-    accessModes:
-        - ReadWriteOnce
-    capacity:
-        storage: 40G
+  storageClassName: "grouper-prod-repo-iscsi-pgo"
+  capacity:
+    storage: 300Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  iscsi:
+    targetPortal: 10.2.249.100
+    iqn: iqn.2003-01.org.linux-iscsi.gainful-pv02.x8664:sn.ae312c14575a
+    lun: 2
+    fsType: xfs
+    readOnly: false
+    chapAuthDiscovery: true
+    chapAuthSession: true
+    secretRef:
+      name: kube-pv-iscsi-secret
 
-    nfs:
-        path: "/kube-pv/grouper-prod-pgo/"
-        server: "gainful-pv01.escs.udel.edu"
-
-    persistentVolumeReclaimPolicy: Retain
-
+# End.
