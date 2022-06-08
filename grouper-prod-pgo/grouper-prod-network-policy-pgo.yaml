@@ -1,0 +1,17 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+    name: grouper-prod-pgo-np
+    namespace: grouper-prod-pgo
+    annotations:
+        from: Anywhere in the namespace
+        to: Anywhere in the namespace
+spec:
+    types:
+    - Ingress
+    - Egress
+    ingress:
+    - action: Allow
+    egress:
+    - action: Allow
+

@@ -1,4 +1,4 @@
-namespace: grouper-prod
+namespace: grouper-prod-pgo
 
 resources:
 - postgres.yaml

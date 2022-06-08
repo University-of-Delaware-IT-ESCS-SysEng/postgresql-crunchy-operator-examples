@@ -20,6 +20,26 @@ You can find out more information about [PGO](https://github.com/CrunchyData/pos
 
 ## Installation
 
+First, we create the namespace.  Follow along with the
+[installation directions](https://access.crunchydata.com/documentation/postgres-operator/latest/installation/kustomize/).
+
+```
+kubectl apply -k kustomize/install/namespace
+```
+
+Then we set a network policy that allows thing within the
+namespace to communicate.  This will help if anyone tried to
+bring up sample database in the `postgres-operator` namespace.
+Nothing really wrong with doing that.  But, we probably want to
+deploy to a private, unique namespace.
+
+The is probably a clever way to do with a patch or something
+in kustomize.
+
+```
+kubectl apply -f postgres-operator-network-policy.yaml
+```
+
 The installation was done in a cluster-wide mode which should enable the operator to manage databases in any namespace.  Specifically, I did:
 
 ```

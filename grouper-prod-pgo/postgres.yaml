@@ -1,8 +1,19 @@
+#
+# We have two instances because we are using
+# two different types of storage: direct attach
+# SSDs and iSCSCI.  iSCSI gives us the advantage that
+# we can run nodes anything that the volume can
+# be mounted.  We are still in initial testing
+# phase of this.
+#
+# The affinity statements are copies and should
+# prevent nodes from running where they should not.
+#
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
-    name: grouper-prod
-    namespace: grouper-prod-ns
+    name: grouper-prod-pgo
+    namespace: grouper-prod-pgo
 spec:
     imagePullSecrets:
         - name: captain-regcreds
@@ -21,6 +32,44 @@ spec:
                 limits:
                     cpu: 4.0
                     memory: 32Gi
+        affinity:
+
+# Force to hardware backed nodes as vs. VMs
+
+            nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution: {
+                    nodeSelectorTerms: [
+                        matchExpressions: [
+                            {
+                                key: udel.edu/hardware-worker,
+                                operator: In,
+                                values: [ worker ]
+                            }
+                        ]
+                    ]
+                }
+
+# Try and avoid scheduling to a worker already running a replica of this
+# database.
+
+            podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution: [
+                    {
+                        weight: 1,
+                        podAffinityTerm: {
+                            topologyKey: "kubernetes.io/hostname",
+                            labelSelector: {
+                                matchExpressions: [
+                                    {
+                                        key: postgres-operator.crunchydata.com/cluster,
+                                        operator: In,
+                                        values: [ grouper-prod-pgo ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
 
       - name: instance2
         replicas: 1
@@ -65,7 +114,7 @@ spec:
                                     {
                                         key: postgres-operator.crunchydata.com/cluster,
                                         operator: In,
-                                        values: [ grouper-prod ]
+                                        values: [ grouper-prod-pgo ]
                                     }
                                 ]
                             }
@@ -95,6 +144,21 @@ spec:
 
     backups:
        pgbackrest:
+# Force to gainful-w06 for testing.  Or whatever.
+            repoHost:
+                affinity:
+                    nodeAffinity:
+                        requiredDuringSchedulingIgnoredDuringExecution: {
+                            nodeSelectorTerms: [
+                                matchExpressions: [
+                                    {
+                                        key: kubernetes.io/hostname,
+                                        operator: In,
+                                        values: [ gainful-w06.escs.udel.edu ]
+                                    }
+                                ]
+                            ]
+                        }
             image: captain.escs.udel.edu:5000/crunchy-pgbackrest:ubi8-2.38-0
             global:
                 repo1-retention-full-type: time
@@ -105,7 +169,7 @@ spec:
             manual:
                 repoName: repo1
                 options:
-                  - --type=full
+                  - --type=differential
             repos:
               - name: repo1
                 schedules:
