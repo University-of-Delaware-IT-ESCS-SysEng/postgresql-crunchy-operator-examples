@@ -18,18 +18,18 @@ fi
 # just edit it by hand.
 #
 
-for o in  "registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi8-5.1.0-0" \
-          "registry.developers.crunchydata.com/crunchydata/postgres-operator-upgrade:ubi8-5.1.0-0" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-13.6-1" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis:ubi8-13.6-3.1-1" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.2-1" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis:ubi8-14.2-3.1-1" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.3-0" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-pgadmin4:ubi8-4.30-0" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-0" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.16-2" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-exporter:ubi8-5.1.0-0" \
-          "registry.developers.crunchydata.com/crunchydata/crunchy-upgrade:ubi8-5.1.0-0" \
+for o in  \
+    "registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi8-5.1.1-0" \
+    "registry.developers.crunchydata.com/crunchydata/postgres-operator-upgrade:ubi8-5.1.1-0" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-13.7-0" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis:ubi8-13.7-3.1-0" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.3-0" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis:ubi8-14.3-3.2-0" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-pgadmin4:ubi8-4.30-1" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-1" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.16-3" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-postgres-exporter:ubi8-5.1.1-0" \
+    "registry.developers.crunchydata.com/crunchydata/crunchy-upgrade:ubi8-5.1.1-0" \
                         ; do \
     OURIMAGE=`basename $o`
     echo "FROM ${o}" > Dockerfile
