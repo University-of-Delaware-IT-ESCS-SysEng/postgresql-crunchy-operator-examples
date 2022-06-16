@@ -144,21 +144,6 @@ spec:
 
     backups:
        pgbackrest:
-# Force to gainful-w06 for testing.  Or whatever.
-            repoHost:
-                affinity:
-                    nodeAffinity:
-                        requiredDuringSchedulingIgnoredDuringExecution: {
-                            nodeSelectorTerms: [
-                                matchExpressions: [
-                                    {
-                                        key: kubernetes.io/hostname,
-                                        operator: In,
-                                        values: [ gainful-w06.escs.udel.edu ]
-                                    }
-                                ]
-                            ]
-                        }
             image: captain.escs.udel.edu:5000/crunchy-pgbackrest:ubi8-2.38-1
             global:
                 repo1-retention-full-type: time
